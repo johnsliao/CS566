@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>HW5.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); font-style: italic; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(0,0,128); font-weight: bold; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+HW5.py</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0"># John Liao</span><span class="s1"> 
+</span><span class="s0"># CS 566, HW 5</span><span class="s1"> 
+</span><span class="s0"># Email: jsmiao@bu.edu</span><span class="s1"> 
+</span><span class="s0"># BU ID: U47-74-9883</span><span class="s1"> 
+ 
+</span><span class="s2">import </span><span class="s1">random 
+ 
+</span><span class="s2">class </span><span class="s1">Knapsack: 
+ 
+    </span><span class="s2">def </span><span class="s1">__init__(self): 
+        self.sack = [] 
+ 
+        self.v = random.sample(range(</span><span class="s3">0</span><span class="s1">,</span><span class="s3">15</span><span class="s1">), </span><span class="s3">5</span><span class="s1">)      </span><span class="s0"># Values</span><span class="s1"> 
+        self.wt = random.sample(range(</span><span class="s3">1</span><span class="s1">,</span><span class="s3">15</span><span class="s1">), </span><span class="s3">5</span><span class="s1">)     </span><span class="s0"># Weights // For simplicity, assume all weights &gt; 0</span><span class="s1"> 
+        self.n = len(self.v)                        </span><span class="s0"># Number of distinct items</span><span class="s1"> 
+        self.W = </span><span class="s3">20                                 </span><span class="s0"># Knapsack capacity</span><span class="s1"> 
+ 
+    </span><span class="s2">def </span><span class="s1">print_defaults(self): 
+        </span><span class="s2">print </span><span class="s4">'INPUTS'</span><span class="s1"> 
+        </span><span class="s2">print </span><span class="s4">'Values:'</span><span class="s1">, self.v 
+        </span><span class="s2">print </span><span class="s4">'Weights:'</span><span class="s1">, self.wt 
+        </span><span class="s2">print </span><span class="s4">'Number of distinct items:'</span><span class="s1">, self.n 
+        </span><span class="s2">print </span><span class="s4">'Knapsack capacity:'</span><span class="s1">, self.W 
+        </span><span class="s2">print </span><span class="s4">'-'</span><span class="s1">*</span><span class="s3">50</span><span class="s1"> 
+ 
+    </span><span class="s0"># 0-1 Knapsack - Top down approach</span><span class="s1"> 
+    </span><span class="s0"># NOT Memoization -- Known values are not stored</span><span class="s1"> 
+    </span><span class="s2">def </span><span class="s1">zero_one_knapsack(self, W, wt, v, n): 
+        </span><span class="s2">if </span><span class="s1">n == </span><span class="s3">0 </span><span class="s2">or </span><span class="s1">W == </span><span class="s3">0</span><span class="s1">: 
+            </span><span class="s2">return </span><span class="s3">0</span><span class="s1"> 
+ 
+        </span><span class="s2">if </span><span class="s1">(wt[n - </span><span class="s3">1</span><span class="s1">] &gt; W): 
+            </span><span class="s2">return </span><span class="s1">self.zero_one_knapsack(W, wt, v, n - </span><span class="s3">1</span><span class="s1">) 
+        </span><span class="s2">else</span><span class="s1">: 
+            </span><span class="s2">return </span><span class="s1">max(v[n - </span><span class="s3">1</span><span class="s1">] + self.zero_one_knapsack(W - wt[n - </span><span class="s3">1</span><span class="s1">], wt, v, n - </span><span class="s3">1</span><span class="s1">), 
+                       self.zero_one_knapsack(W, wt, v, n - </span><span class="s3">1</span><span class="s1">)) 
+ 
+    </span><span class="s0"># Unbounded Knapsack - Top down approach</span><span class="s1"> 
+    </span><span class="s0"># zero_one_knapsack can NOT solve unbounded_knapsack because zero_one_knapsack only considers</span><span class="s1"> 
+    </span><span class="s0"># an item to be taken either 0 or 1 time -- not more than 1.</span><span class="s1"> 
+    </span><span class="s0"># NOT Memoization -- Known values are not stored</span><span class="s1"> 
+    </span><span class="s2">def </span><span class="s1">unbounded_knapsack(self, remaining_weight): 
+        sol = [</span><span class="s3">0</span><span class="s1">] * self.n 
+        my_sol = [</span><span class="s3">0</span><span class="s1">] * self.n 
+ 
+        </span><span class="s2">if </span><span class="s1">remaining_weight == </span><span class="s3">0</span><span class="s1">: 
+            </span><span class="s2">return </span><span class="s3">0</span><span class="s1"> 
+ 
+        </span><span class="s2">for </span><span class="s1">i </span><span class="s2">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s1">,self.n): 
+            </span><span class="s2">if </span><span class="s1">remaining_weight &gt;= self.wt[i]: 
+                sol[i] = self.unbounded_knapsack(remaining_weight-self.wt[i]) 
+            </span><span class="s2">else</span><span class="s1">: 
+                </span><span class="s2">return </span><span class="s3">0</span><span class="s1"> 
+ 
+        </span><span class="s2">for </span><span class="s1">i </span><span class="s2">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s1">, self.n): 
+            </span><span class="s2">if </span><span class="s1">remaining_weight &gt;= self.wt[i]: 
+                my_sol[i] = sol[i] + self.v[i] 
+            </span><span class="s2">else</span><span class="s1">: 
+                my_sol[i] = </span><span class="s3">0</span><span class="s1"> 
+ 
+        final_sol = my_sol[</span><span class="s3">0</span><span class="s1">] 
+ 
+        </span><span class="s2">for </span><span class="s1">i </span><span class="s2">in </span><span class="s1">range(</span><span class="s3">1</span><span class="s1">,self.n): 
+            </span><span class="s2">if </span><span class="s1">my_sol[i] &gt; final_sol: 
+                final_sol = my_sol[i] 
+ 
+        </span><span class="s2">return </span><span class="s1">final_sol 
+ 
+ 
+ 
+</span><span class="s2">if </span><span class="s1">__name__ == </span><span class="s4">'__main__'</span><span class="s1">: 
+    knapsack = Knapsack() 
+    knapsack.print_defaults() 
+ 
+    </span><span class="s2">print </span><span class="s4">'OUTPUTS'</span><span class="s1"> 
+    </span><span class="s2">print </span><span class="s4">'0-1 Knapsack output:'</span><span class="s1">, knapsack.zero_one_knapsack(knapsack.W, 
+                                                             knapsack.wt, 
+                                                             knapsack.v, 
+                                                             knapsack.n) 
+ 
+    </span><span class="s2">print </span><span class="s4">'Unbounded Knapsack output:'</span><span class="s1">, knapsack.unbounded_knapsack(knapsack.W) 
+ 
+ 
+</span></pre>
+</body>
+</html>
